@@ -2,7 +2,7 @@
   "name": "vastustech",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://vastustech.github.io/VastusOfficial/",
+  "homepage": "https://setsfitness.github.io/SetsApp/",
   "dependencies": {
     "ably": "^1.0.20",
     "aws-amplify": "^1.1.6",
