@@ -1,3 +1,3 @@
 [submodule "src/vastuscomponents"]
 	path = src/vastuscomponents
-	url = https://github.com/VastusTech/VastusComponents.git
+	url = git@github.com:SetsFitness/SetsAppComponents.git
