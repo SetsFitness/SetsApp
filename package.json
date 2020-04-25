@@ -15,7 +15,7 @@
     "gulp-help": "^1.6.1",
     "handbrake-js": "^3.0.8",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "prop-types": "^15.7.2",
     "re-carousel": "^2.3.0",
     "react": "^16.8.6",
