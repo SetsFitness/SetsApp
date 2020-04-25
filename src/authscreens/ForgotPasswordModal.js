@@ -28,6 +28,7 @@ const changeStateText = (key, value, setStates) => {
  * @param {function(string)} forgotPassword The function to submit the forgot password call.
  */
 const handleSubmitButton = (username, forgotPassword) => {
+  username = username.toLocaleLowerCase();
   forgotPassword(username);
 };
 

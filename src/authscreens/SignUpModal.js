@@ -53,6 +53,7 @@ const handleCreateButton = (username, password, confirmPassword, name, email, en
 const handleConfirmButton = (username, confirmationCode, confirmSignUp, setError) => {
   // TODO Is there a chance that the username could be lost here?
   if (confirmationCode) {
+    username = username.toLocaleLowerCase();
     confirmSignUp(username, confirmationCode);
   } else {
     setError(new Error("Confirmation code cannot be empty"));
