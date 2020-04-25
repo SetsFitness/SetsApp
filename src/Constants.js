@@ -1,9 +1,9 @@
-export const ifDebug = false;
+export const ifDebug = true;
 export let log = true;
 export let err = true;
 export const ifAlert = false;
 export const reduxLog = true;
-export const ifCallLambdaAtStart = true;
+export const ifCallLambdaAtStart = false;
 export const theme = "light";
 
 export const setLog = l => log = l;

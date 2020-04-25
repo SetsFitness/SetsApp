@@ -32,6 +32,7 @@ const changeStateText = (key, value, setStates) => {
  */
 const vastusSignIn = (username, password, logIn, setError) => {
   // TODO Check to see if the input fields are put in correctly
+  username = username.toLocaleLowerCase();
   if (username && password) {
     logIn(username, password);
   } else {

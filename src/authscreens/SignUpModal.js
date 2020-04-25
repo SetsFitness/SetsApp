@@ -36,6 +36,7 @@ const setStateText = (key, value, setStates) => {
 const handleCreateButton = (username, password, confirmPassword, name, email, enterpriseID, setError, signUp) => {
   // console.log("Setting state with isConfirming is true");
   // TODO Do extra checking for the specifications of the account!
+  username = username.toLocaleLowerCase();
   if (fieldsAreFilledCorrectly(username, password, confirmPassword, name, email, setError)) {
     signUp(username, password, name, email, enterpriseID);
   }
