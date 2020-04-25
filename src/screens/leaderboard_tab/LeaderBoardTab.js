@@ -1,167 +1,166 @@
-import React, { Component, Fragment } from "react";
+//TODO: Refactor from class to component or scrap this.
+
+import React, {Component, Fragment} from "react";
 import _ from "lodash";
-import { Visibility, Message } from "semantic-ui-react";
-import { connect } from "react-redux";
+import {Visibility, Message} from "semantic-ui-react";
+import {connect} from "react-redux";
 import ClientCard from "../../vastuscomponents/components/cards/ClientCard";
-import {fetchUserAttributes} from "../../redux_helpers/actions/userActions";
-import {fetchClient} from "../../vastuscomponents/redux_actions/cacheActions";
+import {fetchUserAttributes} from "../../vastuscomponents/redux/actions/userActions";
+import {fetchClient} from "../../vastuscomponents/redux/actions/cacheActions";
 
 class LeaderBoardTab extends Component {
-    state = {
-        isLoading: true,
-        isFetching: true,
-        sentRequest: false,
-        friends: [],
-    };
+  state = {
+    isLoading: true,
+    isFetching: true,
+    sentRequest: false,
+    friends: [],
+  };
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    // console.log("Mounted");
+    this.update(this.props);
+  }
+
+  componentWillReceiveProps(newProps, nextContext) {
+    this.update(newProps);
+  }
+
+  update(props) {
+    if (!props.user.id) {
+      // console.log("No user ID...");
+      return;
     }
-
-    componentDidMount() {
-        // console.log("Mounted");
-        this.update(this.props);
-    }
-
-    componentWillReceiveProps(newProps, nextContext) {
-        this.update(newProps);
-    }
-
-    update(props) {
-        if (!props.user.id) {
-            // console.log("No user ID...");
-            return;
-        }
-        //console.log("Cur User for grabbing Attributes: " + this.props.user.id);
-        if (props.user.hasOwnProperty("friends") && props.user.hasOwnProperty("challengesWon") && props.user.friends && props.user.friends.length && this.state.isLoading) {
-            // console.log("in here + " + this.state.isLoading);
-            this.state.isLoading = false;
-            let challengesWonLength;
-            if (props.user.challengesWon) {
-                challengesWonLength = props.user.challengesWon.length;
-            }
-            else {
-                challengesWonLength = 0;
-            }
-            // this.state.friends.push({id: props.user.id, challengesWonLength: challengesWonLength});
-            //this.setState({isLoading: false});
-            // console.log(JSON.stringify(props.user.friends));
-            // console.log(JSON.stringify(this.state.friends));
-            this.state.friends.push({id: this.props.user.id, challengesWonLength});
-            for (let i = 0; i < props.user.friends.length; i++) {
-                // if (!(this.props.user.scheduledEvents[i] in this.state.events)) {
-                //     this.addEventFromGraphQL(this.props.user.scheduledEvents[i]);
-                // }
-                // console.log("Fetching client = " + props.user.friends[i]);
-                props.fetchClient(props.user.friends[i], ["id", "challengesWon"],
-                    (client) => {
-                        // Rerender when you get a new scheduled event
-                        // console.log("Received client id = " + client.id);
-                        for (let i = 0; i < this.state.friends.length; i++) {
-                            if (this.state.friends[i].id === client.id) {
-                                return;
-                            }
-                        }
-                        let challengesWonLength;
-                        if (client.challengesWon) {
-                            challengesWonLength = client.challengesWon.length;
-                        }
-                        else {
-                            challengesWonLength = 0;
-                        }
-                        // console.log("Client id = " + client.id + " has challenge length = " + challengesWonLength);
-                        // console.log("hey " + JSON.stringify(this.state.friends));
-                        this.state.friends.push({id: client.id, challengesWonLength: challengesWonLength});
-                        if (this.state.friends.length === props.user.friends.length) {
-                            this.setState({isFetching: false})
-                        }
-                        //this.setState({friends: [...this.state.friends, {id: client.id, challengesWon: client.challengesWon}]});
-                    });
-            }
-        }
-        // else if (!props.info.isLoading) {
-        //     if (!this.state.sentRequest && !props.info.error && props.user.id != null) {
-        //         props.fetchUserAttributes(["friends", "challengesWon"]);
-        //         this.setState({sentRequest: true});
-        //     }
+    //console.log("Cur User for grabbing Attributes: " + this.props.user.id);
+    if (props.user.hasOwnProperty("friends") && props.user.hasOwnProperty("challengesWon") && props.user.friends && props.user.friends.length && this.state.isLoading) {
+      // console.log("in here + " + this.state.isLoading);
+      this.state.isLoading = false;
+      let challengesWonLength;
+      if (props.user.challengesWon) {
+        challengesWonLength = props.user.challengesWon.length;
+      } else {
+        challengesWonLength = 0;
+      }
+      // this.state.friends.push({id: props.user.id, challengesWonLength: challengesWonLength});
+      //this.setState({isLoading: false});
+      // console.log(JSON.stringify(props.user.friends));
+      // console.log(JSON.stringify(this.state.friends));
+      this.state.friends.push({id: this.props.user.id, challengesWonLength});
+      for (let i = 0; i < props.user.friends.length; i++) {
+        // if (!(this.props.user.scheduledEvents[i] in this.state.events)) {
+        //     this.addEventFromGraphQL(this.props.user.scheduledEvents[i]);
         // }
-    }
-
-    // TODO Soon, we will need to address the User vs Client issue
-    getFriendAttribute(id, attribute) {
-        if (id && attribute) {
-            const client = this.props.cache.clients[id];
-            if (client) {
-                if (attribute.substr(attribute.length - 6) === "Length") {
-                    attribute = attribute.substr(0, attribute.length - 6);
-                    if (client[attribute] && client[attribute].length) {
-                        return client[attribute].length;
-                    }
-                    else {
-                        return 0;
-                    }
-                }
-                return this.props.cache.clients[this.state.clientID][attribute];
+        // console.log("Fetching client = " + props.user.friends[i]);
+        props.fetchClient(props.user.friends[i], ["id", "challengesWon"],
+          (client) => {
+            // Rerender when you get a new scheduled event
+            // console.log("Received client id = " + client.id);
+            for (let i = 0; i < this.state.friends.length; i++) {
+              if (this.state.friends[i].id === client.id) {
+                return;
+              }
             }
+            let challengesWonLength;
+            if (client.challengesWon) {
+              challengesWonLength = client.challengesWon.length;
+            } else {
+              challengesWonLength = 0;
+            }
+            // console.log("Client id = " + client.id + " has challenge length = " + challengesWonLength);
+            // console.log("hey " + JSON.stringify(this.state.friends));
+            this.state.friends.push({id: client.id, challengesWonLength: challengesWonLength});
+            if (this.state.friends.length === props.user.friends.length) {
+              this.setState({isFetching: false})
+            }
+            //this.setState({friends: [...this.state.friends, {id: client.id, challengesWon: client.challengesWon}]});
+          });
+      }
+    }
+    // else if (!props.info.isLoading) {
+    //     if (!this.state.sentRequest && !props.info.error && props.user.id != null) {
+    //         props.fetchUserAttributes(["friends", "challengesWon"]);
+    //         this.setState({sentRequest: true});
+    //     }
+    // }
+  }
+
+  // TODO Soon, we will need to address the User vs Client issue
+  getFriendAttribute(id, attribute) {
+    if (id && attribute) {
+      const client = this.props.cache.clients[id];
+      if (client) {
+        if (attribute.substr(attribute.length - 6) === "Length") {
+          attribute = attribute.substr(0, attribute.length - 6);
+          if (client[attribute] && client[attribute].length) {
+            return client[attribute].length;
+          } else {
+            return 0;
+          }
         }
-        return null;
+        return this.props.cache.clients[this.state.clientID][attribute];
+      }
+    }
+    return null;
+  }
+
+  render() {
+    /**
+     * This function takes in a list of events and displays them in a list of Event Card views.
+     * @param clients
+     * @param getClientAttribute
+     * @returns {*}
+     */
+    function rows(clients, getClientAttribute) {
+      //let sortedClients = [...clients];
+      // console.log(JSON.stringify(clients));
+      let sortedClients = clients.sort(function (a, b) {
+        return (b.challengesWonLength - a.challengesWonLength);
+      });
+      // console.log(JSON.stringify(sortedClients));
+      // if(events != null && events.length > 0)
+      //     console.log(JSON.stringify(events[0].id));
+      // console.log("EVENTS TO PRINT: ");
+      // console.log(JSON.stringify(events));
+      return _.times(sortedClients.length, i => (
+        <Fragment key={i}>
+          <ClientCard rank={i + 1} clientID={sortedClients[i].id}/>
+        </Fragment>
+      ));
     }
 
-    render() {
-        /**
-         * This function takes in a list of events and displays them in a list of Event Card views.
-         * @param clients
-         * @param getClientAttribute
-         * @returns {*}
-         */
-        function rows(clients, getClientAttribute) {
-            //let sortedClients = [...clients];
-            // console.log(JSON.stringify(clients));
-            let sortedClients = clients.sort(function(a,b) {
-                return (b.challengesWonLength - a.challengesWonLength);
-            });
-            // console.log(JSON.stringify(sortedClients));
-            // if(events != null && events.length > 0)
-            //     console.log(JSON.stringify(events[0].id));
-            // console.log("EVENTS TO PRINT: ");
-            // console.log(JSON.stringify(events));
-            return _.times(sortedClients.length, i => (
-                <Fragment key={i}>
-                    <ClientCard rank={i + 1} clientID={sortedClients[i].id}/>
-                </Fragment>
-            ));
-        }
-
-        //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
-        //is hit by the user.
-        if (this.state.isFetching) {
-            return(
-                <Message>Loading...</Message>
-            );
-        }
-        return (
-            <Visibility onUpdate={this.handleUpdate}>
-                {rows(this.state.friends, this.getFriendAttribute.bind(this))}
-            </Visibility>
-        );
+    //This displays the rows in a grid format, with visibility enabled so that we know when the bottom of the page
+    //is hit by the user.
+    if (this.state.isFetching) {
+      return (
+        <Message>Loading...</Message>
+      );
     }
+    return (
+      <Visibility onUpdate={this.handleUpdate}>
+        {rows(this.state.friends, this.getFriendAttribute.bind(this))}
+      </Visibility>
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    info: state.info,
-    cache: state.cache,
+  user: state.user,
+  info: state.info,
+  cache: state.cache,
 });
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchUserAttributes: (variablesList) => {
-            dispatch(fetchUserAttributes(variablesList));
-        },
-        fetchClient: (id, variablesList, dataHandler) => {
-            dispatch(fetchClient(id, variablesList, dataHandler));
-        }
-    };
+  return {
+    fetchUserAttributes: (variablesList) => {
+      dispatch(fetchUserAttributes(variablesList));
+    },
+    fetchClient: (id, variablesList, dataHandler) => {
+      dispatch(fetchClient(id, variablesList, dataHandler));
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LeaderBoardTab);

@@ -23,5 +23,9 @@ yarn-error.log*
 
 .idea/
 
+# Holds our secrets
+/src/AppConfig.js
+
 # Styles — compile your own: gulp build in /src/semantic
 /src/semantic/dist
+

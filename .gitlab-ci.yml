@@ -32,6 +32,8 @@ stages:
 
 Build:
   stage: build
+  only:
+    - merge_requests
   tags:
     - node
   before_script: 
@@ -48,6 +50,8 @@ Build:
 
 Test:
   stage: test
+  only:
+    - merge_requests
   tags:
   - node
   before_script: 

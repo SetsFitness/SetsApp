@@ -1,7 +1,0 @@
-/*******************************
-    User Variable Overrides
-*******************************/
-
-@background: @black;
-@headerBackground: @black;
-@activeBackgroundColor: @lightBlack;

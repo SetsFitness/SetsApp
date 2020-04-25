@@ -1,12 +1,14 @@
+// TODO: Refactor search tab from a class to a component
+
 import React, {Component, Fragment} from "react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 import {Popup, List, Divider, Grid, Form, Button} from "semantic-ui-react";
 import {switchReturnItemType} from "../../vastuscomponents/logic/ItemType";
 import ClientCard from "../../vastuscomponents/components/cards/ClientCard";
 import EventCard from "../../vastuscomponents/components/cards/EventCard";
 import ChallengeCard from "../../vastuscomponents/components/cards/ChallengeCard";
 import PostCard from "../../vastuscomponents/components/cards/PostCard";
-import {disableSearchBar, enableSearchBar} from "../../vastuscomponents/redux_actions/searchActions";
+import {disableSearchBar, enableSearchBar} from "../../vastuscomponents/redux/actions/searchActions";
 import TrainerCard from "../../vastuscomponents/components/cards/TrainerCard";
 
 // This is going to be for every search functionality we really want.
@@ -57,107 +59,114 @@ Use Cases:
  */
 
 class SearchTab extends Component {
-    state = {
+  state = {};
 
-    };
+  filterState = {};
 
-    filterState = {
+  changeStateText(key, value) {
+    this.filterState[key] = value.target.value;
+    console.log("new " + key + " is equal to " + value.target.value);
+  }
 
-    };
+  componentWillMount() {
+    this.props.disableSearchBar();
+  }
 
-    changeStateText(key, value) {
-        this.filterState[key] = value.target.value;
-        console.log("new " + key + " is equal to " + value.target.value);
+  componentWillUnmount() {
+    this.props.enableSearchBar();
+  }
+
+  getFormattedResults() {
+    const results = [];
+    for (let i = 0; i < this.props.search.results.length; i++) {
+      const result = this.props.search.results[i];
+      const item_type = result.item_type;
+      results.push(
+        <List.Item>
+          {switchReturnItemType(item_type,
+            <ClientCard rank={i} client={result}/>,
+            <TrainerCard rank={i} trainer={result}/>,
+            null,
+            null,
+            null,
+            <EventCard event={result}/>,
+            <ChallengeCard challenge={result}/>,
+            null,
+            <PostCard postID={result.id}/>,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "Result type not implemented!")}
+        </List.Item>
+      );
     }
+    return results;
+  }
 
-    componentWillMount() {
-        this.props.disableSearchBar();
-    }
-
-    componentWillUnmount() {
-        this.props.enableSearchBar();
-    }
-
-    getFormattedResults() {
-        const results = [];
-        for (let i = 0; i < this.props.search.results.length; i++) {
-            const result = this.props.search.results[i];
-            const item_type = result.item_type;
-            results.push(
-                <List.Item>
-                    {switchReturnItemType(item_type,
-                    <ClientCard rank={i} client={result}/>,
-                    <TrainerCard rank={i} trainer={result}/>,
-                    null,
-                    null,
-                    null,
-                    <EventCard event={result}/>,
-                    <ChallengeCard challenge={result}/>,
-                    null,
-                    <PostCard postID={result.id}/>,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    "Result type not implemented!")}
-                </List.Item>
-            );
-        }
-        return results;
-    }
-
-    render() {
-        return(
-            <Fragment>
-                <Grid columns={2}>
-                    <Grid.Column className="ui one column stackable center aligned page grid">
-                        <Form>
-                            <Form.Input type="text" iconPosition='left' icon='user' name="username" placeholder="Username" onChange={value => this.changeStateText("username", value)}/>
-                            <Popup position="left center" trigger={<Form.Input iconPosition='left' icon='lock' type="password" name="password" placeholder="Password" onChange={value => this.changeStateText("password", value)}/>}>
-                                Password must be at least 8 characters long, contains lower and upper case letters, contain at least one number!
-                            </Popup>
-                            {/* <Form.Input type="password" label="Password" name="password" placeholder="Password" onChange={value => this.changeStateText("password", value)}/> */}
-                            <Form.Input type="password" iconPosition='left' icon='lock' name="confirmPassword" placeholder="Confirm Password" onChange={value => this.changeStateText("confirmPassword", value)}/>
-                            <Divider />
-                            <Form.Input type="text" iconPosition='left' icon='user circle' name="name" placeholder="Name" onChange={value => this.changeStateText("name", value)}/>
-                            <Form.Input type="text" iconPosition='left' icon='male' name="gender" placeholder="Gender" onChange={value => this.changeStateText("gender", value)}/>
-                            <Divider />
-                            <Form.Input type="date" iconPosition='left' icon='calendar alternate outline' name="birthdate" onChange={value => this.changeStateText("birthday", value)}/>
-                            <Form.Input type="text" iconPosition='left' icon='mail' name="email" placeholder="Email" onChange={value => this.changeStateText("email", value)}/>
-                            <div className="u-flex u-flex-justify--space-between u-padding-y--2 u-margin-top--2">
-                                <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
-                                <Button positive color='green' onClick={this.handleCreateButton.bind(this)}>Create</Button>
-                            </div>
-                        </Form>
-                    </Grid.Column>
-                    <Grid.Column verticalAlign='middle' >
-                        <List>
-                            {this.getFormattedResults()}
-                        </List>
-                    </Grid.Column>
-                </Grid>
-            </Fragment>
-        );
-    }
+  render() {
+    return (
+      <Fragment>
+        <Grid columns={2}>
+          <Grid.Column className="ui one column stackable center aligned page grid">
+            <Form>
+              <Form.Input type="text" iconPosition='left' icon='user' name="username" placeholder="Username"
+                          onChange={value => this.changeStateText("username", value)}/>
+              <Popup position="left center"
+                     trigger={<Form.Input iconPosition='left' icon='lock' type="password" name="password"
+                                          placeholder="Password"
+                                          onChange={value => this.changeStateText("password", value)}/>}>
+                Password must be at least 8 characters long, contains lower and upper case letters, contain at least one
+                number!
+              </Popup>
+              {/* <Form.Input type="password" label="Password" name="password" placeholder="Password" onChange={value => this.changeStateText("password", value)}/> */}
+              <Form.Input type="password" iconPosition='left' icon='lock' name="confirmPassword"
+                          placeholder="Confirm Password"
+                          onChange={value => this.changeStateText("confirmPassword", value)}/>
+              <Divider/>
+              <Form.Input type="text" iconPosition='left' icon='user circle' name="name" placeholder="Name"
+                          onChange={value => this.changeStateText("name", value)}/>
+              <Form.Input type="text" iconPosition='left' icon='male' name="gender" placeholder="Gender"
+                          onChange={value => this.changeStateText("gender", value)}/>
+              <Divider/>
+              <Form.Input type="date" iconPosition='left' icon='calendar alternate outline' name="birthdate"
+                          onChange={value => this.changeStateText("birthday", value)}/>
+              <Form.Input type="text" iconPosition='left' icon='mail' name="email" placeholder="Email"
+                          onChange={value => this.changeStateText("email", value)}/>
+              <div className="u-flex u-flex-justify--space-between u-padding-y--2 u-margin-top--2">
+                <Button negative onClick={this.handleCancelButton.bind(this)}>Cancel</Button>
+                <Button positive color='green' onClick={this.handleCreateButton.bind(this)}>Create</Button>
+              </div>
+            </Form>
+          </Grid.Column>
+          <Grid.Column verticalAlign='middle'>
+            <List>
+              {this.getFormattedResults()}
+            </List>
+          </Grid.Column>
+        </Grid>
+      </Fragment>
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    cache: state.cache,
-    info: state.info,
-    search: state.search
+  user: state.user,
+  cache: state.cache,
+  info: state.info,
+  search: state.search
 });
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        enableSearchBar: () => {
-            dispatch(enableSearchBar());
-        },
-        disableSearchBar: () => {
-            dispatch(disableSearchBar());
-        }
-    };
+  return {
+    enableSearchBar: () => {
+      dispatch(enableSearchBar());
+    },
+    disableSearchBar: () => {
+      dispatch(disableSearchBar());
+    }
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchTab);

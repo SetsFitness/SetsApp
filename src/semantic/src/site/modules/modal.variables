@@ -1,9 +1,0 @@
-/*******************************
-         Site Overrides
-*******************************/
-
-@background: @black;
-@headerColor: @textColor;
-@contentBackground: @black;
-@headerBackground: @black;
-@actionBackground: @black;
