@@ -63,6 +63,6 @@
     "redux-mock-store": "^1.5.3",
     "semantic": "^0.0.1",
     "ui": "^0.2.4",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.3.12"
   }
 }
